@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OLTPDatabaseCore.DatabaseContext;
 
@@ -11,9 +12,11 @@ using OLTPDatabaseCore.DatabaseContext;
 namespace OLTPDatabaseCore.Migrations
 {
     [DbContext(typeof(OLTPDbContext))]
-    partial class OLTPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240204115152_Order")]
+    partial class Order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,8 +109,6 @@ namespace OLTPDatabaseCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.ToTable("Orders");
                 });
 
@@ -144,17 +145,6 @@ namespace OLTPDatabaseCore.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderGoods");
-                });
-
-            modelBuilder.Entity("OLTPDatabaseCore.Models.Order", b =>
-                {
-                    b.HasOne("OLTPDatabaseCore.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("OLTPDatabaseCore.Models.OrderGoods", b =>
