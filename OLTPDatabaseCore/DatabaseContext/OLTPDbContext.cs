@@ -26,5 +26,10 @@ namespace OLTPDatabaseCore.DatabaseContext
         /// Многие ко многим. Товары заказа
         /// </summary>
         public DbSet<OrderGoods> OrderGoods{ get; set; }
+
+        /// <summary>
+        /// Информация о заданиях
+        /// </summary>
+        public DbSet<JobLastRunDateTime> JobLastRunDateTimes { get; set; }
     }
 }

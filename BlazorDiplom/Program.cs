@@ -1,5 +1,6 @@
 using BlazorDiplom.Middleware;
 using BlazorSpinner;
+using DatawarehouseCore.DatabaseContext;
 using DevExpress.Blazor;
 using IdentityServerCore.DbContext;
 using IdentityServerCore.Models;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OLTPDatabaseCore.DatabaseContext;
 using OLTPDatabaseCore.Infrastructure;
+using OLTPDatabaseCore.Jobs;
 
 internal static class Program
 {
@@ -25,6 +27,7 @@ internal static class Program
         builder.Services.AddServerSideBlazor();
         builder.Services.AddDbContext<IdentityAppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Identity")));
         builder.Services.AddDbContext<OLTPDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("OLTP")));
+        builder.Services.AddDbContext<DWHDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DWH")));
 
         builder.Services.AddIdentity<User, IdentityRole>(options => { 
             options.SignIn.RequireConfirmedAccount = false; 
@@ -35,6 +38,7 @@ internal static class Program
         }).AddEntityFrameworkStores<IdentityAppDbContext>();
 
         builder.Services.AddScoped<SpinnerService>();
+        builder.Services.AddTransient<SalesETLJob>();
 
         builder.Services.AddScoped<UserManager<User>>();
         builder.Services.AddDevExpressBlazor(configure => configure.BootstrapVersion = BootstrapVersion.v5);
@@ -55,14 +59,17 @@ internal static class Program
 
         using (var scope = app.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<OLTPDbContext>();
+            var dbOLTP = scope.ServiceProvider.GetRequiredService<OLTPDbContext>();
+            var dbDWH = scope.ServiceProvider.GetRequiredService<DWHDbContext>();
+
             var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
 
-            db.Database.Migrate();
+            dbOLTP.Database.Migrate();
+            dbDWH.Database.Migrate();
 
             if (seed)
             {
-                dataSeeder.SeedData(db);
+                dataSeeder.SeedData(dbOLTP);
 
                 Console.WriteLine("Данные сгенерированы");
                 

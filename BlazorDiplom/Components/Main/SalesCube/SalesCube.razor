@@ -6,7 +6,8 @@
 <CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
-            <h3>SalesCube</h3>
+            <h3 color="white">Куб продаж</h3>
+            <button @onclick="RunSalesEtlJob" type="button" class="btn btn-primary">Запуск ETL процесса</button>
         </Authorized>
         <NotAuthorized>
             <p>Вы не авторизованы</p>
