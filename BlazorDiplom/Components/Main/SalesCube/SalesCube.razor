@@ -1,0 +1,16 @@
+﻿@page "/main"
+@using BlazorDiplom.Components.Main.Shared
+@layout MainLayout
+
+@inherits SalesCubeComponent
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <h3>SalesCube</h3>
+        </Authorized>
+        <NotAuthorized>
+            <p>Вы не авторизованы</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
+

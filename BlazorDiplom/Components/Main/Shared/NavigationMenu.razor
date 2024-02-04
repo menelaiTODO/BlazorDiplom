@@ -1,0 +1,21 @@
+﻿@inject NavigationManager NaviManager
+
+<div class="menu-bar-container">
+    <ul class="menu-bar">
+        <NavLink class="nav-link" href="main" Match="NavLinkMatch.All">
+            <li>Куб продаж</li>
+        </NavLink>
+        <NavLink class="nav-link" href="remainsCube">
+            <li>Куб остатков</li>
+        </NavLink>
+        <li>Отчеты</li>
+        <li @onclick="SignOut">Выйти</li>
+    </ul>
+</div>
+
+@code {
+    private void SignOut()
+    {
+        NaviManager.NavigateTo($"/logOut", true);
+    }
+}

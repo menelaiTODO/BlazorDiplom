@@ -1,0 +1,15 @@
+﻿@page "/remainsCube"
+@using BlazorDiplom.Components.Main.Shared
+@layout MainLayout
+
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <h3>RemainsCube</h3>
+        </Authorized>
+        <NotAuthorized>
+            <p>Вы не авторизованы</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
+
