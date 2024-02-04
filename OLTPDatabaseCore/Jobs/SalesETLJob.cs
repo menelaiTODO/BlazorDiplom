@@ -32,9 +32,14 @@ namespace OLTPDatabaseCore.Jobs
                 var item = _oltpContext.JobLastRunDateTimes.Where(item => item.Name == Name).FirstOrDefault();
 
                 if (item is null)
+                {
                     _oltpContext.JobLastRunDateTimes.Add(new Models.JobLastRunDateTime { Name = Name, LastRunDateTime = (DateTime)value });
+                    _oltpContext.SaveChanges();
+                }
                 else
+                {
                     item.LastRunDateTime = (DateTime)value;
+                }
             }
         }
 
@@ -47,11 +52,11 @@ namespace OLTPDatabaseCore.Jobs
             {
                 _isRunning = true;
 
+                var startDateTime = DateTime.Now;
+                
                 using var transaction = _dwhDbContext.Database.BeginTransaction();
                 try
                 {
-                    var startDateTime = DateTime.Now;
-
                     var lastRun = LastRunDatetime ?? new DateTime(2000, 1, 1);
 
                     var productsDWH = _oltpContext.Goods.Where(item => item.CreatedDate >= lastRun)
@@ -89,6 +94,7 @@ namespace OLTPDatabaseCore.Jobs
                 {
                     _dwhDbContext.SaveChanges();
                     transaction.Commit();
+                    LastRunDatetime = startDateTime;
                     _isRunning = false;
                 }
             });
