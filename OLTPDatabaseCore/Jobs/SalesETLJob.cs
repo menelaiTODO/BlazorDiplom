@@ -1,5 +1,6 @@
 ﻿using DatawarehouseCore.DatabaseContext;
 using DatawarehouseCore.Models;
+using Microsoft.EntityFrameworkCore;
 using OLTPDatabaseCore.DatabaseContext;
 
 namespace OLTPDatabaseCore.Jobs
@@ -63,12 +64,12 @@ namespace OLTPDatabaseCore.Jobs
                         .Select(item => new DimProduct { ProductId = item.Id, Name = item.Name });
 
 
-                    _dwhDbContext.DimProducts.AddRangeAsync(productsDWH);
+                    _dwhDbContext.DimProducts.AddRange(productsDWH);
 
                     var ordersDWH = _oltpContext.Orders.Where(item => item.CreatedDate >= lastRun)
                         .Select(item => new DimOrder { OrderId = item.Id, AccountName = item.CreatorName });
 
-                    _dwhDbContext.DimOrders.AddRangeAsync(ordersDWH);
+                    _dwhDbContext.DimOrders.AddRange(ordersDWH);
 
                     var factSalesDWH = (from og in _oltpContext.OrderGoods.Where(item => item.CreatedDate >= lastRun)
                                         join g in _oltpContext.Goods on og.GoodsId equals g.Id
@@ -77,7 +78,7 @@ namespace OLTPDatabaseCore.Jobs
                                             ProductId = og.GoodsId,
                                             OrderId = og.OrderId,
                                             OrderDate = og.CreatedDate,
-                                            Sum = g.SalePrice
+                                            Sum = Math.Floor(g.SalePrice)
                                         });
 
                     _dwhDbContext.FactSales.AddRange(factSalesDWH);

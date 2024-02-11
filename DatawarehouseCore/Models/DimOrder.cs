@@ -6,6 +6,7 @@ namespace DatawarehouseCore.Models
     public class DimOrder
     {
         [Key]
+        [Column("dim_order_id")]
         public int Id { get; set; }
 
         [Column("order_id")]

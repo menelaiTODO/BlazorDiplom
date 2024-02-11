@@ -27,7 +27,7 @@ internal static class Program
         builder.Services.AddServerSideBlazor();
         builder.Services.AddDbContext<IdentityAppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Identity")));
         builder.Services.AddDbContext<OLTPDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("OLTP")));
-        builder.Services.AddDbContext<DWHDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DWH")));
+        builder.Services.AddDbContext<DWHDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DWH")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
         builder.Services.AddIdentity<User, IdentityRole>(options => { 
             options.SignIn.RequireConfirmedAccount = false; 

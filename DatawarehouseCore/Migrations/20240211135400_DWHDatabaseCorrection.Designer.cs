@@ -4,6 +4,7 @@ using DatawarehouseCore.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatawarehouseCore.Migrations
 {
     [DbContext(typeof(DWHDbContext))]
-    partial class DWHDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240211135400_DWHDatabaseCorrection")]
+    partial class DWHDatabaseCorrection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,13 +27,6 @@ namespace DatawarehouseCore.Migrations
 
             modelBuilder.Entity("DatawarehouseCore.Models.DimDate", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("dim_date_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("Day")
                         .HasColumnType("int")
                         .HasColumnName("day");
@@ -52,20 +48,11 @@ namespace DatawarehouseCore.Migrations
                         .HasColumnType("int")
                         .HasColumnName("year");
 
-                    b.HasKey("Id");
-
                     b.ToTable("DimDates");
                 });
 
             modelBuilder.Entity("DatawarehouseCore.Models.DimOrder", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("dim_order_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("AccountName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -75,20 +62,11 @@ namespace DatawarehouseCore.Migrations
                         .HasColumnType("int")
                         .HasColumnName("order_id");
 
-                    b.HasKey("Id");
-
                     b.ToTable("DimOrders");
                 });
 
             modelBuilder.Entity("DatawarehouseCore.Models.DimProduct", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("dim_product_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -98,20 +76,11 @@ namespace DatawarehouseCore.Migrations
                         .HasColumnType("int")
                         .HasColumnName("product_id");
 
-                    b.HasKey("Id");
-
                     b.ToTable("DimProducts");
                 });
 
             modelBuilder.Entity("DatawarehouseCore.Models.FactSales", b =>
                 {
-                    b.Property<int>("FactSalesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("fact_sale_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FactSalesId"));
-
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("order_date");
@@ -127,8 +96,6 @@ namespace DatawarehouseCore.Migrations
                     b.Property<double>("Sum")
                         .HasColumnType("float")
                         .HasColumnName("sum");
-
-                    b.HasKey("FactSalesId");
 
                     b.ToTable("FactSales");
                 });

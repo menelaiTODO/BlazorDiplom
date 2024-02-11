@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatawarehouseCore.Models
@@ -6,7 +7,8 @@ namespace DatawarehouseCore.Models
     public class DimProduct
     {
         [Key]
-        public int Id { get; set; }
+        [Column("dim_product_id")]
+        public int Id { get; set; } 
 
         [Column("product_id")]
         public int ProductId { get; set; }
