@@ -1,5 +1,5 @@
-﻿using BlazorDiplom.Components.Main.SalesCube.Models;
-using BlazorSpinner;
+﻿using BlazorDiplom.Infrastructure;
+using BlazorDiplom.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using OLTPDatabaseCore.Jobs;
@@ -11,10 +11,13 @@ namespace BlazorDiplom.Components.Main.SalesCube
         [Inject] 
         IJSRuntime? JsRunTime { get; set; }
 
-        protected IEnumerable<SalesByMonth> GridData = Enumerable.Empty<SalesByMonth>();
+        protected IEnumerable<OlapSales> GridData = Enumerable.Empty<OlapSales>();
 
         [Inject]
         protected SalesETLJob? SalesETLJob { get; set; }
+
+        [Inject]
+        protected OlapHelper? OlapHelper { get; set; }
 
         protected async Task RunSalesEtlJob()
         {
@@ -25,10 +28,17 @@ namespace BlazorDiplom.Components.Main.SalesCube
             await JsRunTime!.InvokeVoidAsync("alert", "ETL процесс завершен!"); // Alert
         }
 
-/*        protected IEnumerable<SalesByMonth> GetSalesDataByMonth()
+        protected override void OnInitialized()
         {
-            return null;
-        }*/
+            base.OnInitialized();
+
+            GridData = GetSalesDataByMonth();
+        }
+
+        protected IEnumerable<OlapSales> GetSalesDataByMonth()
+        {
+            return OlapHelper!.GetSalesData();
+        }
 
         protected async Task RunCubeProcessing()
         {

@@ -1,6 +1,6 @@
 ﻿@page "/main"
 @using BlazorDiplom.Components.Main.Shared
-@using BlazorDiplom.Components.Main.SalesCube.Models
+@using BlazorDiplom.ViewModels
 
 @layout MainLayout
 
@@ -12,9 +12,9 @@
             <button @onclick="RunSalesEtlJob" type="button" class="btn btn-primary">Запуск ETL процесса</button>
             <button @onclick="RunCubeProcessing" type="button" class="btn btn-danger">Запуск процессирования куба (в разработке)</button>
         <DxPivotGrid Data="@GridData" CssClass="w-100">
-        <DxPivotGridField Field="@nameof(SalesByMonth.MonthName)" ></DxPivotGridField>
-        <DxPivotGridField Field="@nameof(SalesByMonth.SalesCount)" ></DxPivotGridField>
-        <DxPivotGridField Field="@nameof(SalesByMonth.SalesSum)" ></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(OlapSales.MonthName)" ></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(OlapSales.SalesCount)" ></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(OlapSales.Sum)" ></DxPivotGridField>
         </DxPivotGrid>
 
         </Authorized>

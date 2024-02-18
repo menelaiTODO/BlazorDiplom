@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using Microsoft.AnalysisServices.AdomdClient;
+using System.ComponentModel;
+using System.Data;
 using System.Globalization;
 using System.Reflection;
 
@@ -65,8 +67,8 @@ namespace BlazorDiplom.Infrastructure
         {
             var propinfo = value.GetType().GetProperty(propname);
             var attributes =
-                (OLAPMemberNameAttribute[])propinfo!.GetCustomAttributes(
-                typeof(OLAPMemberNameAttribute), false);
+                (DescriptionAttribute[])propinfo!.GetCustomAttributes(
+                typeof(DescriptionAttribute), false);
             if (attributes != null && attributes.Length > 0)
                 return attributes[0].Description;
             else

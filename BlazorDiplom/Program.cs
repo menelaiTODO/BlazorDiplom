@@ -1,3 +1,4 @@
+using BlazorDiplom.Infrastructure;
 using BlazorDiplom.Middleware;
 using BlazorSpinner;
 using DatawarehouseCore.DatabaseContext;
@@ -36,6 +37,8 @@ internal static class Program
             options.Password.RequireLowercase = false;
             options.Password.RequireUppercase = false;
         }).AddEntityFrameworkStores<IdentityAppDbContext>();
+
+        builder.Services.AddScoped(item => new OlapHelper(builder.Configuration.GetConnectionString("OLAP")!));
 
         builder.Services.AddScoped<SpinnerService>();
         builder.Services.AddTransient<SalesETLJob>();
