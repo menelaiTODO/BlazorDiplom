@@ -17,6 +17,14 @@
             }
             else
             {
+                <DxChart Data="@GridData">
+                    <DxChartLineSeries Name="Продажи"
+                                       ArgumentField="@((OlapSales s) => s.MonthName)"
+                                       ValueField="@((OlapSales s) => s.Sum)"
+                                       DashStyle="ChartDashStyle.Dash">
+                    </DxChartLineSeries>
+                </DxChart>
+
                 <DxDataGrid Data="@GridData">
                     <DxDataGridColumn Field="@nameof(OlapSales.MonthName)" Caption="Месяц"></DxDataGridColumn>
                     <DxDataGridColumn Field="@nameof(OlapSales.SalesCount)" Caption="Количество продаж"></DxDataGridColumn>

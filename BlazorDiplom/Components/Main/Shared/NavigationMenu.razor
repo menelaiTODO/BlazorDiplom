@@ -1,6 +1,6 @@
 ﻿@inject NavigationManager NaviManager
 
-<div class="menu-bar-container">
+@* <div class="menu-bar-container">
     <ul class="menu-bar">
         <NavLink class="nav-link" href="main" Match="NavLinkMatch.All">
             <li>Куб продаж</li>
@@ -11,7 +11,17 @@
         <li>Отчеты</li>
         <li @onclick="SignOut">Выйти</li>
     </ul>
-</div>
+</div> *@
+
+<DxMenu CssClass="menu" Title="Анализ данных предприятия"
+        ItemsPosition="ItemPosition.Start">
+    <Items>
+        <DxMenuItem NavigateUrl="main" Text="Куб продаж" IconCssClass="oi oi-book" />
+        <DxMenuItem NavigateUrl="remainsCube" Text="Куб остатков" IconCssClass="oi oi-book" />
+        <DxMenuItem Text="Отчеты" IconCssClass="oi oi-book" />
+        <DxMenuItem Text="Выйти" onclick="@SignOut" IconCssClass="oi oi-book" />
+    </Items>
+</DxMenu>
 
 @code {
     private void SignOut()
