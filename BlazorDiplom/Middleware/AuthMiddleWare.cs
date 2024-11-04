@@ -16,6 +16,9 @@ namespace BlazorDiplom.Middleware
             _next = next;
         }
 
+        /// <summary>
+        /// Сделано для того чтобы "отпустить" HttpContext и записать в него куки
+        /// </summary>
         public async Task Invoke(HttpContext context, SignInManager<User> signInManager)
         {
             if (context.Request.Path == "/login" && context.Request.Query.ContainsKey("key") && context.Request.Query["key"].First() != null)

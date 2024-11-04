@@ -30,6 +30,9 @@
     <ProjectReference Include="..\OLTPDatabaseCore\OLTPDatabaseCore.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Components\Main\Shared\NavigationMenu.razor">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
