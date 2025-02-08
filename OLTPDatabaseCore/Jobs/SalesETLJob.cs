@@ -83,7 +83,7 @@ namespace OLTPDatabaseCore.Jobs
 
                     _dwhDbContext.FactSales.AddRange(factSalesDWH);
 
-                    var dwhDates = factSalesDWH.Select(item => new DimDate { OrderDate = item.OrderDate, Day = (int)item.OrderDate.DayOfWeek, Year = item.OrderDate.Year, Month = item.OrderDate.Month, MonthName = item.OrderDate.ToString("MMMM") });
+                    var dwhDates = factSalesDWH.Select(item => new DimDate { OrderDate = item.OrderDate, Day = (int)item.OrderDate.DayOfWeek, Year = item.OrderDate.Year, Month = item.OrderDate.Month, MonthName = item.OrderDate.ToString("MMMM") }).Distinct();
 
                     _dwhDbContext.DimDates.AddRange(dwhDates); 
                 }

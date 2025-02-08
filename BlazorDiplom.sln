@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevExtreme NuGet.config", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OLTPDatabaseCore", "OLTPDatabaseCore\OLTPDatabaseCore.csproj", "{E3E583A0-CAEE-499A-93CD-578A4DB4C597}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatawarehouseCore", "DatawarehouseCore\DatawarehouseCore.csproj", "{3EB114F8-E03D-4EBB-84B7-EE2CD06BB54C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatawarehouseCore", "DatawarehouseCore\DatawarehouseCore.csproj", "{3EB114F8-E03D-4EBB-84B7-EE2CD06BB54C}"
 EndProject
 Project("{D2ABAB84-BF74-430A-B69E-9DC6D40DDA17}") = "MultidimensionalCore", "MultidimensionalCore\MultidimensionalCore.dwproj", "{C3382BE7-F1FF-4F57-8DF1-5509398EF8F2}"
 EndProject

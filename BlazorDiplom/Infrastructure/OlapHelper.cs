@@ -29,9 +29,9 @@ namespace BlazorDiplom.Infrastructure
                                    } DIMENSION PROPERTIES 
                                    MEMBER_CAPTION, 
                                    MEMBER_UNIQUE_NAME 
-                                   ON ROWS FROM [MOLAP]";
+                                   ON ROWS FROM [SalesCube]";
                 
-                data = conn.Query<OlapSales>(commandText);
+                data = conn.MolapQuery<OlapSales>(commandText);
                 conn.Close();
             }
 

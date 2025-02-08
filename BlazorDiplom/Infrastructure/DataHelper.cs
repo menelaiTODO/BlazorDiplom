@@ -6,9 +6,12 @@ using System.Reflection;
 
 namespace BlazorDiplom.Infrastructure
 {
+    /// <summary>
+    /// Вспомогательный класс для работы с данными
+    /// </summary>
     internal static class DataHelper
     {
-        public static List<T> Query<T>(this AdomdConnection conn, string commandText, params object[] parameters)
+        public static List<T> MolapQuery<T>(this AdomdConnection conn, string commandText, params object[] parameters)
         {
             var cmd = new AdomdCommand(commandText, conn);
             var dr = cmd.ExecuteReader();
@@ -16,6 +19,24 @@ namespace BlazorDiplom.Infrastructure
             return dr.ToList<T>();
         }
 
+        /// <summary>
+        /// Получение DataSource по enum
+        /// </summary>
+        public static IEnumerable<KeyValuePair<int, string>> GetDatasoureByEnum<TEnum>(bool needNullValue = true)
+            where TEnum : Enum
+        {
+            var dt = from TEnum n in Enum.GetValues(typeof(TEnum))
+                     select new KeyValuePair<int, string>(Convert.ToInt32(n), GetEnumDescription(n));
+
+            if (needNullValue)
+                dt = dt.Append(new KeyValuePair<int, string>(0, string.Empty));
+
+            return dt.OrderBy(item => item.Key);
+        }
+
+        /// <summary>
+        /// DataReader To List
+        /// </summary>
         public static List<T> ToList<T>(this IDataReader dr)
         {
             var list = new List<T>();
@@ -73,6 +94,20 @@ namespace BlazorDiplom.Infrastructure
                 return attributes[0].Description;
             else
                 return value.ToString();
+        }
+
+        private static string GetEnumDescription(Enum value)
+        {
+            var fi = value.GetType()?.GetField(value.ToString());
+
+            var attributes = fi?.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+            if (attributes != null && attributes.Any())
+            {
+                return attributes.First().Description;
+            }
+
+            return value.ToString();
         }
     }
 }

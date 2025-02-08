@@ -1,6 +1,8 @@
 ﻿@page "/main"
+@using BlazorDiplom.Components.Main.FuzzyConstructor
 @using BlazorDiplom.Components.Main.Shared
 @using BlazorDiplom.ViewModels
+@using DevExpress.Blazor.Popup;
 
 @layout MainLayout
 
@@ -10,7 +12,7 @@
         <Authorized>
             <h3 style="color: white;">Куб продаж</h3>
             <button @onclick="RunSalesEtlJob" type="button" class="btn btn-primary">Запуск ETL процесса</button>
-            <button @onclick="RunCubeProcessing" type="button" class="btn btn-danger">Запуск процессирования куба (в разработке)</button>
+            <button @onclick="CreateFuzzyQuery" type="button" class="btn btn-danger">Сформировать нечеткий запрос</button>
             @if (GridData == null)
             {
                 <p><em>Loading...</em></p>
@@ -31,6 +33,11 @@
                     <DxDataGridColumn Field="@nameof(OlapSales.Sum)" Caption="Сумма продаж"></DxDataGridColumn>
                 </DxDataGrid>
             }
+
+            <DxPopup HeaderText="Конструктор нечеткого запроса" @bind-Visible=IsFuzzyQueryConstuctorVisible @onclose="() => IsFuzzyQueryConstuctorVisible = false" >
+                <FuzzyConstructor></FuzzyConstructor>
+            </DxPopup>
+
         </Authorized>
         <NotAuthorized>
             <p>Вы не авторизованы</p>

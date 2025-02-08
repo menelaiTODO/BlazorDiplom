@@ -1,0 +1,70 @@
+﻿@using BlazorDiplom.ViewModels
+@inherits FuzzyConstructorComponent
+
+<div>
+    <div>
+        <h5>Выберите тип лингвистической переменной:</h5>
+    <div>
+            <DxComboBox
+                Data="LinguisticVariableType" 
+                Value="LinguisticVariableBindedValue"
+                        SelectedItemChanged="(KeyValuePair<int, string> item) => OnLinguisticChanged(item)"
+                EditFormat="{0}"
+                        DisplayFormat="{0}">
+            <Columns>
+                <DxListEditorColumn Caption="Наименование" FieldName="Value" />
+            </Columns>
+        </DxComboBox>
+    </div>
+    </div>
+    <div>
+        <fieldset id="fuzzyFuncRadio">
+        @if (FuzzyFunctionDt is not null)
+        {
+            <h5>Выберите тип функции принадлежности:</h5>
+
+            foreach (var item in FuzzyFunctionDt)
+            {
+                <div>
+                  <input name="fuzzyFuncRadio" value="@item.Id" type="radio" onchange="@SelectedFuzzyFunctionChanged" />
+                  <img width="200" height="150" src="@item.ImgSrc" />
+                  <p>@item.Description</p>
+                </div>
+            }
+        }
+        </fieldset>
+    </div>
+    <div>
+    @if (SelectedFuzzyFunctionData != null)
+    {
+            <div>
+              <h5>Введите минимальный порог соответствия элементов лингвистической переменной:</h5>
+            </div>
+           
+            <div>
+              <InputText @bind-Value="@Test" />
+            </div>
+
+            <div>
+              <h5>Введите точки для построения функции принадлежности:</h5>
+            </div>
+            
+            for (var i = 0; i < SelectedFuzzyFunctionData.PointCount; i++)
+            {
+                <div>
+                    <p>Точка #@(i+1)</p>
+                    <InputText @bind-Value="@Test" />
+                </div>
+            }
+
+            <div>
+              <h5>Выберите меру или измерение к которой относится лингвистическая переменная:</h5>
+            </div>
+            <div>
+                    <InputText @bind-Value="@Test" />
+            </div>
+
+        }
+    </div>
+
+</div>

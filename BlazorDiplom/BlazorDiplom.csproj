@@ -42,4 +42,16 @@
     <PackageReference Include="DevExtreme.AspNet.Core" Version="22.2.4" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.9.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\Images\p-type1.png" />
+    <None Include="wwwroot\Images\spline1.png" />
+    <None Include="wwwroot\Images\spline2.png" />
+    <None Include="wwwroot\Images\trapec.png" />
+    <None Include="wwwroot\Images\treug.png" />
+    <None Include="wwwroot\Images\z-type1.png" />
+    <None Include="wwwroot\Images\z-type2.png" />
+  </ItemGroup>
 </Project>

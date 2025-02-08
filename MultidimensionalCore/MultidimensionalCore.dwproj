@@ -8,12 +8,12 @@
   </Database>
   <Cubes>
     <ProjectItem>
-      <Name>MOLAP.cube</Name>
-      <FullPath>MOLAP.cube</FullPath>
+      <Name>SalesCube.cube</Name>
+      <FullPath>SalesCube.cube</FullPath>
       <Dependencies>
         <ProjectItem>
-          <Name>MOLAP.partitions</Name>
-          <FullPath>MOLAP.partitions</FullPath>
+          <Name>SalesCube.partitions</Name>
+          <FullPath>SalesCube.partitions</FullPath>
         </ProjectItem>
       </Dependencies>
     </ProjectItem>
@@ -52,7 +52,7 @@
           <ConfigurationSetting>
             <Id>Datawarehouse</Id>
             <Name>Datawarehouse</Name>
-            <Value xsi:type="xsd:string">Provider=SQLNCLI11.1;Data Source=(local);Persist Security Info=True;Password=;User ID=;Initial Catalog=Datawarehouse</Value>
+            <Value xsi:type="xsd:string">Provider=SQLNCLI11.1;Data Source=(local);Password=;User ID=;Initial Catalog=Datawarehouse</Value>
           </ConfigurationSetting>
         </ConnectionMappings>
         <ConnectionSecurityMappings>

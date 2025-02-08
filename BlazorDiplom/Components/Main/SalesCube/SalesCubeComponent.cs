@@ -19,6 +19,8 @@ namespace BlazorDiplom.Components.Main.SalesCube
         [Inject]
         protected OlapHelper? OlapHelper { get; set; }
 
+        protected bool IsFuzzyQueryConstuctorVisible { get; set; } = false;
+
         protected async Task RunSalesEtlJob()
         {
             await JsRunTime!.InvokeVoidAsync("alert", "ETL процесс запущен!"); // Alert
@@ -40,9 +42,9 @@ namespace BlazorDiplom.Components.Main.SalesCube
             return OlapHelper!.GetSalesData();
         }
 
-        protected async Task RunCubeProcessing()
+        protected void CreateFuzzyQuery()
         {
-            await JsRunTime!.InvokeVoidAsync("alert", "В разработке!"); // Alert
+            IsFuzzyQueryConstuctorVisible = true;
         }
     }
 }
