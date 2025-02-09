@@ -1,4 +1,5 @@
 ﻿using BlazorDiplom.ViewModels;
+using BlazorDiplom.ViewModels.MOLAP;
 using Microsoft.AnalysisServices.AdomdClient;
 
 namespace BlazorDiplom.Infrastructure
@@ -12,6 +13,28 @@ namespace BlazorDiplom.Infrastructure
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// Сведения об атрибутах в MS SSAS 
+        /// </summary>
+        public IEnumerable<OlapAttr> GetAttrDescription()
+        {
+            var data = Enumerable.Empty<OlapAttr>();
+
+            using (var conn = new AdomdConnection(_connectionString))
+            {
+                conn.Open();
+                var commandText = @"SELECT MEASURE_UNIQUE_NAME FROM $system.mdschema_measures";
+
+                data = conn.MolapQuery<OlapAttr>(commandText);
+                conn.Close();
+            }
+
+            return data;
+        }
+
+        /// <summary>
+        /// Состояние продаж (Тип 1) 
+        /// </summary>
         public IEnumerable<OlapSales> GetSalesData()
         {
             var data = Enumerable.Empty<OlapSales>();

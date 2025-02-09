@@ -8,6 +8,7 @@
             <DxComboBox
                 Data="LinguisticVariableType" 
                 Value="LinguisticVariableBindedValue"
+                ValueFieldName="Key"
                         SelectedItemChanged="(KeyValuePair<int, string> item) => OnLinguisticChanged(item)"
                 EditFormat="{0}"
                         DisplayFormat="{0}">
@@ -42,28 +43,54 @@
             </div>
            
             <div>
-              <InputText @bind-Value="@Test" />
+              <InputNumber @bind-Value="@CustomLinguisticVariableData.MinIndex" />
             </div>
 
             <div>
               <h5>Введите точки для построения функции принадлежности:</h5>
             </div>
-            
-            for (var i = 0; i < SelectedFuzzyFunctionData.PointCount; i++)
+
+            var index = 0;
+            foreach (var item in SelectedFuzzyFunctionData.YValues)
             {
+                var ii = index;
                 <div>
-                    <p>Точка #@(i+1)</p>
-                    <InputText @bind-Value="@Test" />
+                    <p>Точка #@(index+1). Значение по оси ординат = @(item) </p>
+                    <InputNumber @bind-Value="@CustomLinguisticVariableData.Points[ii]" />
                 </div>
+
+                index += 1;
+            }
+
+            @if (@CustomLinguisticVariableData.Points.Any(item => item != 0))
+            {
+                <DxChart Data="@CustomLinguisticVariableData.PointsForChart">
+                    <DxChartLineSeries Name="Функция принадлежности"
+                                       ArgumentField="((double X, double Y) item) => item.X"
+                                       ValueField="((double X, double Y) item) => item.Y"
+                                       DashStyle="ChartDashStyle.Dash">
+                    </DxChartLineSeries>
+                </DxChart>
             }
 
             <div>
               <h5>Выберите меру или измерение к которой относится лингвистическая переменная:</h5>
             </div>
             <div>
-                    <InputText @bind-Value="@Test" />
+              <DxComboBox ValueFieldName="AttrName" Data="@OlapAttrs" @bind-Value="@CustomLinguisticVariableData.MOLAPItemName" EditFormat="{0}" DisplayFormat="{0}">
+                 <Columns>
+                  <DxListEditorColumn Caption="Наименование" FieldName="AttrName" />
+                </Columns>
+              </DxComboBox>
+            </div>
+             <div>
+              <h5>Введите наименование лингвистической переменной:</h5>
+            </div>
+            <div>
+              <InputText @bind-Value="@CustomLinguisticVariableData.Name" />
             </div>
 
+            <DxButton RenderStyle="ButtonRenderStyle.Primary" RenderStyleMode="ButtonRenderStyleMode.Contained"  Text="Сохранить" Click="@SaveChanges"></DxButton>
         }
     </div>
 

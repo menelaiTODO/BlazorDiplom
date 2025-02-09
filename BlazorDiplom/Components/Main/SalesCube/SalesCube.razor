@@ -12,7 +12,7 @@
         <Authorized>
             <h3 style="color: white;">Куб продаж</h3>
             <button @onclick="RunSalesEtlJob" type="button" class="btn btn-primary">Запуск ETL процесса</button>
-            <button @onclick="CreateFuzzyQuery" type="button" class="btn btn-danger">Сформировать нечеткий запрос</button>
+            <button @onclick="CreateFuzzyParam" type="button" class="btn btn-danger">Создать нечеткую лингв. переменную</button>
             @if (GridData == null)
             {
                 <p><em>Loading...</em></p>
@@ -34,8 +34,8 @@
                 </DxDataGrid>
             }
 
-            <DxPopup HeaderText="Конструктор нечеткого запроса" @bind-Visible=IsFuzzyQueryConstuctorVisible @onclose="() => IsFuzzyQueryConstuctorVisible = false" >
-                <FuzzyConstructor></FuzzyConstructor>
+            <DxPopup HeaderText="Конструктор нечеткой лингвистической переменной" @bind-Visible=IsFuzzyQueryConstuctorVisible @onclose="() => IsFuzzyQueryConstuctorVisible = false" >
+                <FuzzyConstructor OnSavedCallback="()=> IsFuzzyQueryConstuctorVisible=false"></FuzzyConstructor>
             </DxPopup>
 
         </Authorized>

@@ -42,7 +42,7 @@ namespace BlazorDiplom.Components.Main.SalesCube
             return OlapHelper!.GetSalesData();
         }
 
-        protected void CreateFuzzyQuery()
+        protected void CreateFuzzyParam()
         {
             IsFuzzyQueryConstuctorVisible = true;
         }

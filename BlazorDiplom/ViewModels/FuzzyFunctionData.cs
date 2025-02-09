@@ -24,41 +24,57 @@ namespace BlazorDiplom.ViewModels
         public string ImgSrc { get;set; } = string.Empty;
 
         /// <summary>
-        /// Количество точек необходимое для функции принадлежности
+        /// Значение функции принадлежности (необходимо для последующего указание точек по оси X)
         /// </summary>
-        public int PointCount { get; set; }
+        public IEnumerable<double> YValues { get; set; } = Enumerable.Empty<double>();
 
         /// <summary>
         /// Создание датасурса 
         /// </summary>
         public static IEnumerable<FuzzyFunctionData> BuildDataSource()
         {
-            Func<int, string, string, int, FuzzyFunctionData> func = (int id, string description, string imgSrc, int pointCount) => new FuzzyFunctionData { Id = id, Description = description, PointCount = pointCount, ImgSrc = imgSrc };
+            Func<int, string, string, IEnumerable<double>, FuzzyFunctionData > func = (int id, string description, string imgSrc, IEnumerable<double> yValues) 
+                =>
+            new FuzzyFunctionData 
+            { 
+                Id = id, 
+                Description = description, 
+                YValues = yValues, 
+                ImgSrc = imgSrc
+            };
 
+            double[] yValues;
             foreach (var item in DataHelper.GetDatasoureByEnum<FuzzyFunctionEnum>(false))
             {
                 switch ((FuzzyFunctionEnum)item.Key)
                 {
                     case FuzzyFunctionEnum.TriangularFunction:
-                        yield return func(item.Key, item.Value, "Images/treug.png", 3);
+                        yValues = [0, 1, 0];
+                        yield return func(item.Key, item.Value, "Images/treug.png", yValues);
                         break;
                     case FuzzyFunctionEnum.TrapezoidalFunction:
-                        yield return func(item.Key, item.Value, "Images/trapec.png", 4);
+                        yValues = [0, 1, 1, 0];
+                        yield return func(item.Key, item.Value, "Images/trapec.png", yValues);
                         break;
                     case FuzzyFunctionEnum.ZShapedFunctionType1:
-                        yield return func(item.Key, item.Value, "Images/z-type1.png", 3);
+                        yValues = [0, 1, 1, 0];
+                        yield return func(item.Key, item.Value, "Images/z-type1.png", yValues);
                         break;
                     case FuzzyFunctionEnum.ZShapedFunctionType2:
-                        yield return func(item.Key, item.Value, "Images/z-type2.png", 3);
+                        yValues = [0, 1, 1, 0];
+                        yield return func(item.Key, item.Value, "Images/z-type2.png", yValues);
                         break;
                     case FuzzyFunctionEnum.SplineFunctionType1:
-                        yield return func(item.Key, item.Value, "Images/spline1.png", 3);
+                        yValues = [0, 1, 1, 0];
+                        yield return func(item.Key, item.Value, "Images/spline1.png", yValues);
                         break;
                     case FuzzyFunctionEnum.SplineFunctionType2:
-                        yield return func(item.Key, item.Value, "Images/spline2.png", 3);
+                        yValues = [0, 1, 1, 0];
+                        yield return func(item.Key, item.Value, "Images/spline2.png", yValues);
                         break;
                     case FuzzyFunctionEnum.PShapedFunction:
-                        yield return func(item.Key, item.Value, "Images/p-type1.png", 3);
+                        yValues = [0, 1, 1, 0];
+                        yield return func(item.Key, item.Value, "Images/p-type1.png", yValues);
                         break;
                 }
             }
