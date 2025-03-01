@@ -1,4 +1,6 @@
-﻿using Microsoft.AnalysisServices.AdomdClient;
+﻿using BlazorDiplom.ViewModels;
+using FuzzyDataDbCore.Models;
+using Microsoft.AnalysisServices.AdomdClient;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
@@ -11,12 +13,12 @@ namespace BlazorDiplom.Infrastructure
     /// </summary>
     internal static class DataHelper
     {
-        public static List<T> MolapQuery<T>(this AdomdConnection conn, string commandText, params object[] parameters)
+        public static List<T> MolapQuery<T>(this AdomdConnection conn, string commandText, CustomLinguisticVariable? variable = null, FuzzyFunctionData? funcData = null)
         {
             var cmd = new AdomdCommand(commandText, conn);
             var dr = cmd.ExecuteReader();
 
-            return dr.ToList<T>();
+            return dr.ToList<T>(variable, funcData);
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace BlazorDiplom.Infrastructure
         /// <summary>
         /// DataReader To List
         /// </summary>
-        public static List<T> ToList<T>(this IDataReader dr)
+        public static List<T> ToList<T>(this IDataReader dr, CustomLinguisticVariable? variable = null, FuzzyFunctionData? funcData = null)
         {
             var list = new List<T>();
 
@@ -45,13 +47,35 @@ namespace BlazorDiplom.Infrastructure
             {
                 var obj = Activator.CreateInstance<T>();
 
+                var filterResult = true;
+
                 foreach (var prop in obj!.GetType().GetProperties())
                 {
                     var columnDescription = GetPropertyDescription(obj, prop.Name);
 
+                    if (variable is not null && funcData is not null && columnDescription == variable.MeasureName)
+                    {
+                        var columnOrdinal = dr.GetOrdinal(columnDescription!);
+                        var value = dr[columnOrdinal];
+
+                        var result = funcData.MemberShipFunction(variable!.Points!.Select(item => item.XValue).ToArray(), Convert.ToDouble(value));
+
+                        if (result < variable.MinIndex)
+                        {
+                            dr.Read();
+
+                            filterResult = false;
+
+                            break;
+                        }
+                    }
+
                     if (ExistsDataReaderColumn(dr, columnDescription!))
                         CopyColumnValueToProperty(dr, obj, prop);
                 }
+
+                if (!filterResult)
+                    continue;
 
                 list.Add(obj);
             }

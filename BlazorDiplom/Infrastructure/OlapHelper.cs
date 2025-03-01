@@ -1,5 +1,6 @@
 ﻿using BlazorDiplom.ViewModels;
 using BlazorDiplom.ViewModels.MOLAP;
+using FuzzyDataDbCore.Models;
 using Microsoft.AnalysisServices.AdomdClient;
 
 namespace BlazorDiplom.Infrastructure
@@ -23,7 +24,7 @@ namespace BlazorDiplom.Infrastructure
             using (var conn = new AdomdConnection(_connectionString))
             {
                 conn.Open();
-                var commandText = @"SELECT MEASURE_UNIQUE_NAME FROM $system.mdschema_measures";
+                var commandText = @"SELECT * FROM $SYSTEM.MDSCHEMA_MEASURES WHERE CUBE_NAME = 'SalesCube';";
 
                 data = conn.MolapQuery<OlapAttr>(commandText);
                 conn.Close();
@@ -35,7 +36,7 @@ namespace BlazorDiplom.Infrastructure
         /// <summary>
         /// Состояние продаж (Тип 1) 
         /// </summary>
-        public IEnumerable<OlapSales> GetSalesData()
+        public IEnumerable<OlapSales> GetSalesData(CustomLinguisticVariable? variable = null, FuzzyFunctionData? funcData = null)
         {
             var data = Enumerable.Empty<OlapSales>();
 
@@ -54,7 +55,7 @@ namespace BlazorDiplom.Infrastructure
                                    MEMBER_UNIQUE_NAME 
                                    ON ROWS FROM [SalesCube]";
                 
-                data = conn.MolapQuery<OlapSales>(commandText);
+                data = conn.MolapQuery<OlapSales>(commandText, variable, funcData);
                 conn.Close();
             }
 

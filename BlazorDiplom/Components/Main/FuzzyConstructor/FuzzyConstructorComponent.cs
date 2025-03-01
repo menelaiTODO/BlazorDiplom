@@ -2,7 +2,11 @@
 using BlazorDiplom.Infrastructure.Enums;
 using BlazorDiplom.ViewModels;
 using BlazorDiplom.ViewModels.MOLAP;
+using FuzzyDataDbCore.DatabaseContext;
+using FuzzyDataDbCore.Models;
+using FuzzyDataDbCore.Repository;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
@@ -11,7 +15,19 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
     public class FuzzyConstructorComponent : ComponentBase
     {
         [Inject]
-        IJSRuntime? JsRunTime { get; set; }
+        protected AuthenticationStateProvider? AuthProvider { get; set; }
+
+        [Inject]
+        private IJSRuntime? JsRunTime { get; set; }
+
+        [Inject]
+        private FuzzyDataDbContext? FuzzyDataDbContext { get; set; }
+
+        /// <summary>
+        /// Идентификатор разреза куба
+        /// </summary>
+        [Parameter]
+        public int SliceId { get; set; }
 
         [Parameter]
         public EventCallback OnSavedCallback { get; set; }
@@ -22,7 +38,7 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
 
         protected int? LinguisticVariableBindedValue { get; set; }
 
-        protected CustomLinguisticVariable? CustomLinguisticVariableData { get; set; }
+        protected SingletoneLinguisticVariable? CustomLinguisticVariableData { get; set; }
         
         [Inject]
         protected OlapHelper? OlapHelper { get; set; }
@@ -53,7 +69,7 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
             {
                 OlapAttrs = OlapHelper?.GetAttrDescription();
 
-                CustomLinguisticVariableData = new CustomLinguisticVariable(SelectedFuzzyFunctionData)
+                CustomLinguisticVariableData = new SingletoneLinguisticVariable(SelectedFuzzyFunctionData)
                 {
                     FuzzyFunctionData = SelectedFuzzyFunctionData
                 };
@@ -62,6 +78,22 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
 
         protected async Task SaveChanges(MouseEventArgs eventArgs)
         {
+            var user = (await AuthProvider!.GetAuthenticationStateAsync()).User;
+            var userStringId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
+
+            var dbObjVar = new CustomLinguisticVariable
+            {
+                CreatedDate = DateTime.Now,
+                CreatorName = userStringId ?? string.Empty,
+                Name = CustomLinguisticVariableData!.Name,
+                MinIndex = CustomLinguisticVariableData.MinIndex,
+                CubeSliceId = SliceId,
+                FuncId = CustomLinguisticVariableData.FuzzyFunctionData.Id,
+                MeasureName = CustomLinguisticVariableData.MOLAPItemName
+            };
+
+            new CustomLinguisticVariableRepository(FuzzyDataDbContext!).SaveCustomLinguisticVariable(dbObjVar, CustomLinguisticVariableData.PointsForChart);
+
             await JsRunTime!.InvokeVoidAsync("alert", "Лингвистическая переменная создана"); // Alert
             await OnSavedCallback.InvokeAsync();
         }

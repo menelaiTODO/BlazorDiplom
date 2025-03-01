@@ -3,6 +3,7 @@ using BlazorDiplom.Middleware;
 using BlazorSpinner;
 using DatawarehouseCore.DatabaseContext;
 using DevExpress.Blazor;
+using FuzzyDataDbCore.DatabaseContext;
 using IdentityServerCore.DbContext;
 using IdentityServerCore.Models;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +29,7 @@ internal static class Program
         builder.Services.AddServerSideBlazor();
         builder.Services.AddDbContext<IdentityAppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Identity")));
         builder.Services.AddDbContext<OLTPDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("OLTP")));
+        builder.Services.AddDbContext<FuzzyDataDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FuzzyData")));
         builder.Services.AddDbContext<DWHDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DWH")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
         builder.Services.AddIdentity<User, IdentityRole>(options => { 
@@ -64,11 +66,13 @@ internal static class Program
         {
             var dbOLTP = scope.ServiceProvider.GetRequiredService<OLTPDbContext>();
             var dbDWH = scope.ServiceProvider.GetRequiredService<DWHDbContext>();
+            var dbFuzzyData = scope.ServiceProvider.GetRequiredService<FuzzyDataDbContext>();
 
             var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
 
             dbOLTP.Database.Migrate();
             dbDWH.Database.Migrate();
+            dbFuzzyData.Database.Migrate();
 
             if (seed)
             {

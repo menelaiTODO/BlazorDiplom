@@ -1,0 +1,16 @@
+﻿@using FuzzyDataDbCore.Models
+@inherits ChooseFilterComponent
+
+<h3>Выберите нечеткие лингв. переменные</h3>
+
+<div>
+<DxDataGrid SingleSelectedDataRowChanged="(item) => Selected = item" Data="@GridData">
+    <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.Name)" Caption="Наименование"></DxDataGridColumn>
+    <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.MeasureName)" Caption="Мера"></DxDataGridColumn>
+    <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.CreatedDate)" Caption="Дата создания"></DxDataGridColumn>
+</DxDataGrid>
+</div>
+
+<div>
+  <button @onclick="ApplyFilter" type="button" class="btn btn-danger">Выбрать</button>
+</div>

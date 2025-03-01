@@ -5,9 +5,9 @@ namespace BlazorDiplom.ViewModels
     /// <summary>
     /// Модель, отображающая сведения об создаваемой лингвистической переменной
     /// </summary>
-    public class CustomLinguisticVariable
+    public class SingletoneLinguisticVariable
     {
-        public CustomLinguisticVariable(FuzzyFunctionData data)
+        public SingletoneLinguisticVariable(FuzzyFunctionData data)
         {
             Points = new double[data.YValues.Count()];
 

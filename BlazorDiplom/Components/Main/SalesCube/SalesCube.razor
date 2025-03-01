@@ -1,8 +1,10 @@
 ﻿@page "/main"
+@using BlazorDiplom.Components.Main.ChooseFilter
 @using BlazorDiplom.Components.Main.FuzzyConstructor
 @using BlazorDiplom.Components.Main.Shared
 @using BlazorDiplom.ViewModels
 @using DevExpress.Blazor.Popup;
+@using FuzzyDataDbCore.Models
 
 @layout MainLayout
 
@@ -13,6 +15,7 @@
             <h3 style="color: white;">Куб продаж</h3>
             <button @onclick="RunSalesEtlJob" type="button" class="btn btn-primary">Запуск ETL процесса</button>
             <button @onclick="CreateFuzzyParam" type="button" class="btn btn-danger">Создать нечеткую лингв. переменную</button>
+            <button @onclick="ApplyFilter" type="button" class="btn btn-danger">Применить фильтр (нечетк. лингв. переменн.)</button>
             @if (GridData == null)
             {
                 <p><em>Loading...</em></p>
@@ -20,7 +23,7 @@
             else
             {
                 <DxChart Data="@GridData">
-                    <DxChartLineSeries Name="Продажи"
+                    <DxChartLineSeries Visible="@DxChartVisible" Name="Продажи"
                                        ArgumentField="@((OlapSales s) => s.MonthName)"
                                        ValueField="@((OlapSales s) => s.Sum)"
                                        DashStyle="ChartDashStyle.Dash">
@@ -35,7 +38,11 @@
             }
 
             <DxPopup HeaderText="Конструктор нечеткой лингвистической переменной" @bind-Visible=IsFuzzyQueryConstuctorVisible @onclose="() => IsFuzzyQueryConstuctorVisible = false" >
-                <FuzzyConstructor OnSavedCallback="()=> IsFuzzyQueryConstuctorVisible=false"></FuzzyConstructor>
+                <FuzzyConstructor SliceId="@CubeSliceId" OnSavedCallback="()=> IsFuzzyQueryConstuctorVisible=false"></FuzzyConstructor>
+            </DxPopup>
+
+            <DxPopup HeaderText="Фильтр" @bind-Visible=IsFilterPopupVisible @onclose="() => IsFilterPopupVisible = false" >
+                <ChooseFilter OnChoosedCallback="HandleFilterChanged" CubeSlice="@CubeSliceId"></ChooseFilter>
             </DxPopup>
 
         </Authorized>
@@ -44,4 +51,3 @@
         </NotAuthorized>
     </AuthorizeView>
 </CascadingAuthenticationState>
-

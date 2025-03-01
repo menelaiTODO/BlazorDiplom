@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DatawarehouseCore\DatawarehouseCore.csproj" />
+    <ProjectReference Include="..\FuzzyDataDbCore\FuzzyDataDbCore.csproj" />
     <ProjectReference Include="..\IdentityServerCore\IdentityServerCore.csproj" />
     <ProjectReference Include="..\OLTPDatabaseCore\OLTPDatabaseCore.csproj" />
   </ItemGroup>

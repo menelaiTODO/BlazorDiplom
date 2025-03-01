@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatawarehouseCore", "Datawa
 EndProject
 Project("{D2ABAB84-BF74-430A-B69E-9DC6D40DDA17}") = "MultidimensionalCore", "MultidimensionalCore\MultidimensionalCore.dwproj", "{C3382BE7-F1FF-4F57-8DF1-5509398EF8F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyDataDbCore", "FuzzyDataDbCore\FuzzyDataDbCore.csproj", "{6EAECDE1-B13D-490C-B123-197E820C9D76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,12 @@ Global
 		{C3382BE7-F1FF-4F57-8DF1-5509398EF8F2}.Release|Any CPU.ActiveCfg = Development
 		{C3382BE7-F1FF-4F57-8DF1-5509398EF8F2}.Release|Any CPU.Build.0 = Development
 		{C3382BE7-F1FF-4F57-8DF1-5509398EF8F2}.Release|Any CPU.Deploy.0 = Development
+		{6EAECDE1-B13D-490C-B123-197E820C9D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAECDE1-B13D-490C-B123-197E820C9D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAECDE1-B13D-490C-B123-197E820C9D76}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAECDE1-B13D-490C-B123-197E820C9D76}.Development|Any CPU.Build.0 = Debug|Any CPU
+		{6EAECDE1-B13D-490C-B123-197E820C9D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAECDE1-B13D-490C-B123-197E820C9D76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
