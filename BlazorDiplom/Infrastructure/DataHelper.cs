@@ -1,4 +1,5 @@
 ﻿using BlazorDiplom.ViewModels;
+using BlazorDiplom.ViewModels.MOLAP.Base;
 using FuzzyDataDbCore.Models;
 using Microsoft.AnalysisServices.AdomdClient;
 using System.ComponentModel;
@@ -13,7 +14,18 @@ namespace BlazorDiplom.Infrastructure
     /// </summary>
     internal static class DataHelper
     {
-        public static List<T> MolapQuery<T>(this AdomdConnection conn, string commandText, CustomLinguisticVariable? variable = null, FuzzyFunctionData? funcData = null)
+        private const string ExcludedProperty = "Internal";
+
+        public static List<T> MolapQuery<T>(this AdomdConnection conn, string commandText)
+        {
+            var cmd = new AdomdCommand(commandText, conn);
+            var dr = cmd.ExecuteReader();
+
+            return dr.ToList<T>();
+        }
+
+        public static List<T> FuzzyMolapQuery<T>(this AdomdConnection conn, string commandText, CustomLinguisticVariable variable, FuzzyFunctionData funcData) 
+            where T: class, IMolapItem
         {
             var cmd = new AdomdCommand(commandText, conn);
             var dr = cmd.ExecuteReader();
@@ -39,7 +51,8 @@ namespace BlazorDiplom.Infrastructure
         /// <summary>
         /// DataReader To List
         /// </summary>
-        public static List<T> ToList<T>(this IDataReader dr, CustomLinguisticVariable? variable = null, FuzzyFunctionData? funcData = null)
+        public static List<T> ToList<T>(this IDataReader dr, CustomLinguisticVariable variable, FuzzyFunctionData funcData)
+            where T : class, IMolapItem
         {
             var list = new List<T>();
 
@@ -48,22 +61,25 @@ namespace BlazorDiplom.Infrastructure
                 var obj = Activator.CreateInstance<T>();
 
                 var filterResult = true;
+                double? result = null;
 
                 foreach (var prop in obj!.GetType().GetProperties())
                 {
+
                     var columnDescription = GetPropertyDescription(obj, prop.Name);
 
-                    if (variable is not null && funcData is not null && columnDescription == variable.MeasureName)
+                    if (columnDescription == ExcludedProperty)
+                        continue;
+
+                    if (columnDescription == variable.MeasureName)
                     {
                         var columnOrdinal = dr.GetOrdinal(columnDescription!);
                         var value = dr[columnOrdinal];
 
-                        var result = funcData.MemberShipFunction(variable!.Points!.Select(item => item.XValue).ToArray(), Convert.ToDouble(value));
+                        result = funcData.MemberShipFunction(variable!.Points!.OrderBy(item => item.PointSeq).Select(item => item.XValue).ToArray(), Convert.ToDouble(value));
 
                         if (result < variable.MinIndex)
                         {
-                            dr.Read();
-
                             filterResult = false;
 
                             break;
@@ -77,10 +93,39 @@ namespace BlazorDiplom.Infrastructure
                 if (!filterResult)
                     continue;
 
+                if (result is not null)
+                    obj.FuzzyResults = obj.FuzzyResults.Append(new (variable.Name, (double)result));
+
+
                 list.Add(obj);
             }
             return list;
         }
+
+        public static List<T> ToList<T>(this IDataReader dr)
+        {
+            var list = new List<T>();
+
+            while (dr.Read())
+            {
+                var obj = Activator.CreateInstance<T>();
+
+                foreach (var prop in obj!.GetType().GetProperties())
+                {
+                    var columnDescription = GetPropertyDescription(obj, prop.Name);
+
+                    if (columnDescription == ExcludedProperty)
+                        continue;
+
+                    if (ExistsDataReaderColumn(dr, columnDescription!))
+                        CopyColumnValueToProperty(dr, obj, prop);
+                }
+
+                list.Add(obj);
+            }
+            return list;
+        }
+
         private static void CopyColumnValueToProperty<T>(IDataReader dr, T obj, PropertyInfo prop)
         {
             try

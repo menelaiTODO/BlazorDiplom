@@ -49,7 +49,7 @@ namespace BlazorDiplom.Components.Main.SalesCube
 
         protected IEnumerable<OlapSales> GetSalesDataByMonth()
         {
-            return OlapHelper!.GetSalesData();
+            return OlapHelper!.GetFuzzySalesData();
         }
 
         protected void ApplyFilter() 
@@ -68,7 +68,7 @@ namespace BlazorDiplom.Components.Main.SalesCube
 
             var fuzzyFuncInfo = FuzzyFunctionData.BuildDataSource().Where(item => item.Id == variable.FuncId).First();
 
-            GridData = OlapHelper?.GetSalesData(variable, fuzzyFuncInfo)!;
+            GridData = OlapHelper?.GetFuzzySalesData(variable, fuzzyFuncInfo)!;
 
             IsFilterPopupVisible = false;
             

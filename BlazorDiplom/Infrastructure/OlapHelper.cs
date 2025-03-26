@@ -36,7 +36,7 @@ namespace BlazorDiplom.Infrastructure
         /// <summary>
         /// Состояние продаж (Тип 1) 
         /// </summary>
-        public IEnumerable<OlapSales> GetSalesData(CustomLinguisticVariable? variable = null, FuzzyFunctionData? funcData = null)
+        public IEnumerable<OlapSales> GetFuzzySalesData(CustomLinguisticVariable? variable = null, FuzzyFunctionData? funcData = null)
         {
             var data = Enumerable.Empty<OlapSales>();
 
@@ -54,8 +54,12 @@ namespace BlazorDiplom.Infrastructure
                                    MEMBER_CAPTION, 
                                    MEMBER_UNIQUE_NAME 
                                    ON ROWS FROM [SalesCube]";
-                
-                data = conn.MolapQuery<OlapSales>(commandText, variable, funcData);
+
+                if (variable is not null && funcData is not null)
+                    data = conn.FuzzyMolapQuery<OlapSales>(commandText, variable, funcData);
+                else
+                    data = conn.MolapQuery<OlapSales>(commandText);
+
                 conn.Close();
             }
 

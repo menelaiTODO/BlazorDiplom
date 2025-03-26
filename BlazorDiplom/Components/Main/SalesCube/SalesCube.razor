@@ -12,7 +12,7 @@
 <CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
-            <h3 style="color: white;">Куб продаж</h3>
+            <h3 style="color: white;">Динамика продаж по месяцам (2023 г.)</h3>
             <button @onclick="RunSalesEtlJob" type="button" class="btn btn-primary">Запуск ETL процесса</button>
             <button @onclick="CreateFuzzyParam" type="button" class="btn btn-danger">Создать нечеткую лингв. переменную</button>
             <button @onclick="ApplyFilter" type="button" class="btn btn-danger">Применить фильтр (нечетк. лингв. переменн.)</button>
@@ -33,7 +33,12 @@
                 <DxDataGrid Data="@GridData">
                     <DxDataGridColumn Field="@nameof(OlapSales.MonthName)" Caption="Месяц"></DxDataGridColumn>
                     <DxDataGridColumn Field="@nameof(OlapSales.SalesCount)" Caption="Количество продаж"></DxDataGridColumn>
-                    <DxDataGridColumn Field="@nameof(OlapSales.Sum)" Caption="Сумма продаж"></DxDataGridColumn>
+                    <DxDataGridColumn Field="@nameof(OlapSales.Sum)" Caption="Выручка (в рублях)"></DxDataGridColumn>
+
+                    @if (GridData.Any(item => item.FuzzyResults.Count() > 0))
+                    {
+                      <DxDataGridColumn Field="@nameof(OlapSales.GetFuzzyStrData)" Caption="Инф. по фильтру"></DxDataGridColumn>
+                    }
                 </DxDataGrid>
             }
 
