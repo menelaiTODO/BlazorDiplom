@@ -1,7 +1,9 @@
-﻿namespace BlazorDiplom.ViewModels.MOLAP.Base
+﻿using System.Collections.ObjectModel;
+
+namespace BlazorDiplom.ViewModels.MOLAP.Base
 {
     public interface IMolapItem
     {
-        public IEnumerable<(string fuzzyKey, double fuzzyResult)> FuzzyResults { get; set; }
+        public Collection<(string fuzzyKey, double fuzzyResult)> FuzzyResults { get; set; }
     }
 }

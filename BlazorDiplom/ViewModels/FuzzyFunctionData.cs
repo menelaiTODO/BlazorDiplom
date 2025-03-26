@@ -59,7 +59,31 @@ namespace BlazorDiplom.ViewModels
                 {
                     case FuzzyFunctionEnum.TriangularFunction:
                         yValues = [0, 1, 0];
-                        yield return func(item.Key, item.Value, "Images/treug.png", yValues, null);
+
+                        memberShipFunction = new Func<double[], double, double>((double[] points, double x) =>
+                        {
+                            double returnValue;
+
+                            // Проверка, находится ли x в пределах левой части треугольника
+                            if (x >= points[0] && x <= points[1])
+                            {
+                                returnValue = (x - points[0]) / (points[1] - points[0]); // Линейное увеличение от 0 до 1
+                            }
+                            // Проверка, находится ли x в верхней части треугольника
+                            else if (x > points[1] && x < points[2])
+                            {
+                                returnValue = (points[2] - x) / (points[2] - points[1]); // Линейное уменьшение от 1 до 0
+                            }
+                            // Если x вне диапазона, возвращаем 0
+                            else
+                            {
+                                returnValue = 0;
+                            }
+
+                            return returnValue;
+                        });
+
+                        yield return func(item.Key, item.Value, "Images/treug.png", yValues, memberShipFunction);
                         break;
                     case FuzzyFunctionEnum.TrapezoidalFunction:
                         memberShipFunction = new Func<double[], double, double>((double[] points, double x) => 

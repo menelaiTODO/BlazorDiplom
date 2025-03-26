@@ -1,6 +1,9 @@
 using BlazorDiplom.Infrastructure;
 using BlazorDiplom.Middleware;
+using BlazorDiplom.ViewModels;
+using BlazorDiplom.ViewModels.MOLAP;
 using BlazorSpinner;
+using Dapper;
 using DatawarehouseCore.DatabaseContext;
 using DevExpress.Blazor;
 using FuzzyDataDbCore.DatabaseContext;
@@ -11,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using OLTPDatabaseCore.DatabaseContext;
 using OLTPDatabaseCore.Infrastructure;
 using OLTPDatabaseCore.Jobs;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 internal static class Program
 {
@@ -86,6 +91,19 @@ internal static class Program
 
         app.UseHttpsRedirection();
 
+        foreach (var type in GetTypesForSqlMapper())
+        {
+            Dapper.SqlMapper.SetTypeMap(
+                type,
+                new CustomPropertyTypeMap(
+                    type,
+                    (type, columnName) =>
+                        type.GetProperties().FirstOrDefault(prop =>
+                            prop.GetCustomAttributes(false)
+                                .OfType<ColumnAttribute>()
+                                .Any(attr => attr.Name == columnName))));
+        }
+
         app.UseStaticFiles();
 
         app.UseRouting();
@@ -94,5 +112,11 @@ internal static class Program
         app.MapControllers();
 
         app.Run();
+    }
+
+    private static IEnumerable<Type> GetTypesForSqlMapper()
+    {
+        yield return typeof(OlapSales);
+        yield return typeof(OlapAttr);
     }
 }

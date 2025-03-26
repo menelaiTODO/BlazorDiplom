@@ -1,11 +1,6 @@
-﻿using BlazorDiplom.ViewModels;
-using BlazorDiplom.ViewModels.MOLAP.Base;
-using FuzzyDataDbCore.Models;
-using Microsoft.AnalysisServices.AdomdClient;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
-using System.Globalization;
-using System.Reflection;
 
 namespace BlazorDiplom.Infrastructure
 {
@@ -14,25 +9,6 @@ namespace BlazorDiplom.Infrastructure
     /// </summary>
     internal static class DataHelper
     {
-        private const string ExcludedProperty = "Internal";
-
-        public static List<T> MolapQuery<T>(this AdomdConnection conn, string commandText)
-        {
-            var cmd = new AdomdCommand(commandText, conn);
-            var dr = cmd.ExecuteReader();
-
-            return dr.ToList<T>();
-        }
-
-        public static List<T> FuzzyMolapQuery<T>(this AdomdConnection conn, string commandText, CustomLinguisticVariable variable, FuzzyFunctionData funcData) 
-            where T: class, IMolapItem
-        {
-            var cmd = new AdomdCommand(commandText, conn);
-            var dr = cmd.ExecuteReader();
-
-            return dr.ToList<T>(variable, funcData);
-        }
-
         /// <summary>
         /// Получение DataSource по enum
         /// </summary>
@@ -48,123 +24,6 @@ namespace BlazorDiplom.Infrastructure
             return dt.OrderBy(item => item.Key);
         }
 
-        /// <summary>
-        /// DataReader To List
-        /// </summary>
-        public static List<T> ToList<T>(this IDataReader dr, CustomLinguisticVariable variable, FuzzyFunctionData funcData)
-            where T : class, IMolapItem
-        {
-            var list = new List<T>();
-
-            while (dr.Read())
-            {
-                var obj = Activator.CreateInstance<T>();
-
-                var filterResult = true;
-                double? result = null;
-
-                foreach (var prop in obj!.GetType().GetProperties())
-                {
-
-                    var columnDescription = GetPropertyDescription(obj, prop.Name);
-
-                    if (columnDescription == ExcludedProperty)
-                        continue;
-
-                    if (columnDescription == variable.MeasureName)
-                    {
-                        var columnOrdinal = dr.GetOrdinal(columnDescription!);
-                        var value = dr[columnOrdinal];
-
-                        result = funcData.MemberShipFunction(variable!.Points!.OrderBy(item => item.PointSeq).Select(item => item.XValue).ToArray(), Convert.ToDouble(value));
-
-                        if (result < variable.MinIndex)
-                        {
-                            filterResult = false;
-
-                            break;
-                        }
-                    }
-
-                    if (ExistsDataReaderColumn(dr, columnDescription!))
-                        CopyColumnValueToProperty(dr, obj, prop);
-                }
-
-                if (!filterResult)
-                    continue;
-
-                if (result is not null)
-                    obj.FuzzyResults = obj.FuzzyResults.Append(new (variable.Name, (double)result));
-
-
-                list.Add(obj);
-            }
-            return list;
-        }
-
-        public static List<T> ToList<T>(this IDataReader dr)
-        {
-            var list = new List<T>();
-
-            while (dr.Read())
-            {
-                var obj = Activator.CreateInstance<T>();
-
-                foreach (var prop in obj!.GetType().GetProperties())
-                {
-                    var columnDescription = GetPropertyDescription(obj, prop.Name);
-
-                    if (columnDescription == ExcludedProperty)
-                        continue;
-
-                    if (ExistsDataReaderColumn(dr, columnDescription!))
-                        CopyColumnValueToProperty(dr, obj, prop);
-                }
-
-                list.Add(obj);
-            }
-            return list;
-        }
-
-        private static void CopyColumnValueToProperty<T>(IDataReader dr, T obj, PropertyInfo prop)
-        {
-            try
-            {
-                var columnDescription = GetPropertyDescription(obj, prop.Name);
-                var columnOrdinal = dr.GetOrdinal(columnDescription!);
-                var value = dr[columnOrdinal];
-                var canBeNull = !prop.PropertyType.IsValueType || (Nullable.GetUnderlyingType(prop.PropertyType) != null);
-                var castToType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                if (canBeNull && value == null)
-                    prop.SetValue(obj, null, null);
-                else
-                    prop.SetValue(obj, Convert.ChangeType(value, castToType, CultureInfo.InvariantCulture), null);
-            }
-            catch { }
-        }
-
-        private static bool ExistsDataReaderColumn(IDataReader dr, string propertyName)
-        {
-            try
-            {
-                var obj = dr[propertyName];
-                return true;
-            }
-            catch { return false; }
-        }
-
-        private static string? GetPropertyDescription(object value, string propname)
-        {
-            var propinfo = value.GetType().GetProperty(propname);
-            var attributes =
-                (DescriptionAttribute[])propinfo!.GetCustomAttributes(
-                typeof(DescriptionAttribute), false);
-            if (attributes != null && attributes.Length > 0)
-                return attributes[0].Description;
-            else
-                return value.ToString();
-        }
-
         private static string GetEnumDescription(Enum value)
         {
             var fi = value.GetType()?.GetField(value.ToString());
@@ -177,6 +36,29 @@ namespace BlazorDiplom.Infrastructure
             }
 
             return value.ToString();
+        }
+
+        /// <summary>
+        /// Получение значения свойства по наименованию меры
+        /// </summary>
+        public static double? GetPropertyValueByColumnName(object obj, string columnName)
+        {
+            var type = obj.GetType();
+
+            var properties = type.GetProperties();
+
+            foreach (var property in properties)
+            {
+                var columnAttribute = property.GetCustomAttributes(typeof(ColumnAttribute), false)
+                    .FirstOrDefault() as ColumnAttribute;
+
+                if (columnAttribute != null && columnAttribute.Name == columnName)
+                {
+                    return Convert.ToDouble(property.GetValue(obj)?.ToString());
+                }
+            }
+
+            return null;
         }
     }
 }

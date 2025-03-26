@@ -1,21 +1,21 @@
 ﻿using BlazorDiplom.ViewModels.MOLAP.Base;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace BlazorDiplom.ViewModels
 {
     public class OlapSales : IMolapItem
     {
-        [Description("[Dim Dates].[Month Name].[Month Name].[MEMBER_CAPTION]")]
+        [Column("[Dim Dates].[Month Name].[Month Name].[MEMBER_CAPTION]")]
         public string MonthName { get; set; } = string.Empty;
 
-        [Description("[Measures].[Sum]")]
+        [Column("[Measures].[Sum]")]
         public double Sum { get; set; }
 
-        [Description("[Measures].[Число Fact Sales]")]
+        [Column("[Measures].[Число Fact Sales]")]
         public double SalesCount { get; set; }
 
-        [Description("Internal")]
         public string GetFuzzyStrData { 
             get 
             {
@@ -30,7 +30,6 @@ namespace BlazorDiplom.ViewModels
             } 
         }
 
-        [Description("Internal")]
-        public IEnumerable<(string fuzzyKey, double fuzzyResult)> FuzzyResults { get; set; } = Enumerable.Empty<(string fuzzyKey, double fuzzyResult)>();
+        public Collection<(string fuzzyKey, double fuzzyResult)> FuzzyResults { get; set; } = new Collection<(string fuzzyKey, double fuzzyResult)>();
     }
 }
