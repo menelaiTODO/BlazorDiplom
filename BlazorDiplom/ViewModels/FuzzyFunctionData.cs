@@ -1,6 +1,5 @@
 ﻿using BlazorDiplom.Infrastructure;
 using BlazorDiplom.Infrastructure.Enums;
-using System.Reflection.Metadata.Ecma335;
 
 namespace BlazorDiplom.ViewModels
 {
@@ -115,12 +114,57 @@ namespace BlazorDiplom.ViewModels
                         yield return func(item.Key, item.Value, "Images/trapec.png", yValues, memberShipFunction);
                         break;
                     case FuzzyFunctionEnum.ZShapedFunctionType1:
-                        yValues = [0, 1, 1, 0];
-                        yield return func(item.Key, item.Value, "Images/z-type1.png", yValues, null);
+                        yValues = [1, 0];
+
+                        memberShipFunction = new Func<double[], double, double>((double[] points, double x) =>
+                        {
+                            double returnValue;
+
+                            if (x <= points[0])
+                            {
+                                returnValue = 1; 
+                            }
+                            else if (x > points[0] && x < points[1])
+                            {
+                                returnValue = (points[1] - x) / (points[1] - points[0]); 
+                            }
+                            else
+                            {
+                                returnValue = 0;
+                            }
+
+                            return returnValue;
+                        });
+
+                            yield return func(item.Key, item.Value, "Images/z-type1.png", yValues, memberShipFunction);
+
                         break;
                     case FuzzyFunctionEnum.ZShapedFunctionType2:
-                        yValues = [0, 1, 1, 0];
-                        yield return func(item.Key, item.Value, "Images/z-type2.png", yValues, null);
+                        yValues = [0, 1];
+
+                        memberShipFunction = new Func<double[], double, double>((double[] points, double x) =>
+                        {
+                            double returnValue;
+
+                            if (x >= points[1])
+                            {
+                                returnValue = 1; 
+                            }
+                            else if (x < points[1] && x > points[0])
+                            {
+                                returnValue = (x - points[0]) / (points[1] - points[0]); // Линейное увеличение от 0 до 1
+                            }
+                            // Если x меньше левой контрольной точки, возвращаем 0
+                            else
+                            {
+                                returnValue = 0;
+                            }
+
+                            return returnValue;
+                        });
+
+                        yield return func(item.Key, item.Value, "Images/z-type2.png", yValues, memberShipFunction);
+
                         break;
                     case FuzzyFunctionEnum.SplineFunctionType1:
                         yValues = [0, 1, 1, 0];

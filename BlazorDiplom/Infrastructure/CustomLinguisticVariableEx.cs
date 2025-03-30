@@ -17,6 +17,11 @@ namespace BlazorDiplom.Infrastructure
         /// <summary>
         /// Серверные настройки функции принадлежности
         /// </summary>
-        public FuzzyFunctionData? FuzzyFunctionData => FuzzyFunctionData.BuildDataSource().Where(item => item.Id == LinguisticVariable?.FuncId).First();
+        public FuzzyFunctionData? FuzzyFunctionData => FuzzyFunctionData.BuildDataSource().Where(item => item.Id == LinguisticVariable?.FuncId).FirstOrDefault();
+
+        /// <summary>
+        /// View Model, отображающая основные сведения о существующей одиночной лингвистической переменной
+        /// </summary>
+        public SingletoneLinguisticVariable? SingletoneLinguisticVariable => new SingletoneLinguisticVariable(FuzzyFunctionData ?? throw new NullReferenceException("Не найдены настройки функции принадлежности"), LinguisticVariable);
     }
 }

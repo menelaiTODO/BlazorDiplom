@@ -1,4 +1,7 @@
-﻿@using BlazorDiplom.ViewModels
+﻿@using BlazorDiplom.Infrastructure.Enums
+@using BlazorDiplom.ViewModels
+@using BlazorDiplom.ViewModels.MOLAP
+@using FuzzyDataDbCore.Models
 @inherits FuzzyConstructorComponent
 
 <div>
@@ -18,6 +21,9 @@
         </DxComboBox>
     </div>
     </div>
+    @if (LinguisticVariableBindedValue == (int)LinguisticVariableTypeEnum.SingletoneLinguisticVariable)
+    {
+    <div>
     <div>
         <fieldset id="fuzzyFuncRadio">
         @if (FuzzyFunctionDt is not null)
@@ -43,7 +49,7 @@
             </div>
            
             <div>
-              <InputNumber @bind-Value="@CustomLinguisticVariableData.MinIndex" />
+              <InputNumber @bind-Value="@SingletoneLinguisticVariableData.MinIndex" />
             </div>
 
             <div>
@@ -56,15 +62,15 @@
                 var ii = index;
                 <div>
                     <p>Точка #@(index+1). Значение по оси ординат = @(item) </p>
-                    <InputNumber @bind-Value="@CustomLinguisticVariableData.Points[ii]" />
+                    <InputNumber @bind-Value="@SingletoneLinguisticVariableData.Points[ii]" />
                 </div>
 
                 index += 1;
             }
 
-            @if (@CustomLinguisticVariableData.Points.Any(item => item != 0))
+            @if (SingletoneLinguisticVariableData.Points.Any(item => item != 0))
             {
-                <DxChart Data="@CustomLinguisticVariableData.PointsForChart">
+                <DxChart Data="@SingletoneLinguisticVariableData.PointsForChart">
                     <DxChartLineSeries Name="Функция принадлежности"
                                        ArgumentField="((double X, double Y) item) => item.X"
                                        ValueField="((double X, double Y) item) => item.Y"
@@ -77,7 +83,7 @@
               <h5>Выберите меру к которой относится лингвистическая переменная:</h5>
             </div>
             <div>
-              <DxComboBox ValueFieldName="AttrName" Data="@OlapAttrs" @bind-Value="@CustomLinguisticVariableData.MOLAPItemName" EditFormat="{0}" DisplayFormat="{0}">
+              <DxComboBox ValueFieldName="AttrName" Data="@OlapAttrs" @bind-Value="@SingletoneLinguisticVariableData.MOLAPItemName" EditFormat="{0}" DisplayFormat="{0}">
                  <Columns>
                   <DxListEditorColumn Caption="Наименование" FieldName="AttrName" />
                 </Columns>
@@ -87,11 +93,55 @@
               <h5>Введите наименование лингвистической переменной:</h5>
             </div>
             <div>
-              <InputText @bind-Value="@CustomLinguisticVariableData.Name" />
+              <InputText @bind-Value="@SingletoneLinguisticVariableData.Name" />
             </div>
 
             <DxButton RenderStyle="ButtonRenderStyle.Primary" RenderStyleMode="ButtonRenderStyleMode.Contained"  Text="Сохранить" Click="@SaveChanges"></DxButton>
         }
     </div>
+        </div>
+    }
+    else if (LinguisticVariableBindedValue == (int)LinguisticVariableTypeEnum.MultiplyLunguisticVariable)
+    {
+     <div>
+            <div>
+              <h5>Выберите меру к которой относится составная лингвистическая переменная:</h5>
+            </div>
+            <div>
+              <DxComboBox 
+                  ValueFieldName="AttrName" 
+                  Data="@OlapAttrs" 
+                  @bind-Value="@MultiplyLinguisticVariableData.MeasureName" 
+                  EditFormat="{0}" 
+                  DisplayFormat="{0}"
+                  SelectedItemChanged = "(OlapAttr item) => OnMultipyVariableOlapAttrChanged(item)">
+                <Columns>
+                  <DxListEditorColumn Caption="Наименование" FieldName="AttrName" />
+                </Columns>
 
+              </DxComboBox>
+            </div>
+
+            @if (!string.IsNullOrEmpty(MultiplyLinguisticVariableData.MeasureName))
+            {
+                <div>
+                    <h5>Выберите одиночные функции принадлежности:</h5>
+                </div>
+                <div>
+                    <DxDataGrid SelectionMode="DataGridSelectionMode.MultipleSelectedDataRows" MultipleSelectedDataRowsChanged = "(IEnumerable<CustomLinguisticVariable> items) => MultiplyLinguisticVariableData.SingletoneLinguisticVariables = items" Data="@GridDataForMultiplyVariable">
+                        <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.Name)" Caption="Наименование"></DxDataGridColumn>
+                        <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.MeasureName)" Caption="Мера"></DxDataGridColumn>
+                        <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.CreatedDate)" Caption="Дата создания"></DxDataGridColumn>
+                    </DxDataGrid>
+                </div>
+                <div>
+                    <h5>Введите наименование составной лингвистической переменной:</h5>
+                </div>
+
+                <div>
+                    <InputText @bind-Value="@MultiplyLinguisticVariableData.Name" />
+            </div>
+            }
+     </div>
+    }
 </div>

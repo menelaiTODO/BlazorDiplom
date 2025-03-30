@@ -4,12 +4,23 @@
 <h3>Выберите нечеткие лингв. переменные</h3>
 
 <div>
-<DxDataGrid SingleSelectedDataRowChanged="(item) => Selected = item" Data="@GridData">
+<DxDataGrid SingleSelectedDataRowChanged="(item) => {Selected = item; CustomLinguisticVariableEx = new Infrastructure.CustomLinguisticVariableEx{LinguisticVariable = item}; StateHasChanged();}" Data="@GridData">
     <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.Name)" Caption="Наименование"></DxDataGridColumn>
     <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.MeasureName)" Caption="Мера"></DxDataGridColumn>
     <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.CreatedDate)" Caption="Дата создания"></DxDataGridColumn>
 </DxDataGrid>
 </div>
+
+@if (CustomLinguisticVariableEx?.LinguisticVariable != null)
+{
+    <DxChart Data="@CustomLinguisticVariableEx.SingletoneLinguisticVariable.PointsForChart">
+        <DxChartLineSeries Name="Функция принадлежности"
+                           ArgumentField="((double X, double Y) item) => item.X"
+                           ValueField="((double X, double Y) item) => item.Y"
+                           DashStyle="ChartDashStyle.Dash">
+        </DxChartLineSeries>
+    </DxChart>
+}
 
 <div>
   <button @onclick="ApplyFilter" type="button" class="btn btn-danger">Выбрать</button>

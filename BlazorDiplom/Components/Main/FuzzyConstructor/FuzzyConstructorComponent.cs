@@ -8,6 +8,7 @@ using FuzzyDataDbCore.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 
 namespace BlazorDiplom.Components.Main.FuzzyConstructor
@@ -38,8 +39,12 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
 
         protected int? LinguisticVariableBindedValue { get; set; }
 
-        protected SingletoneLinguisticVariable? CustomLinguisticVariableData { get; set; }
-        
+        protected IEnumerable<CustomLinguisticVariable>? GridDataForMultiplyVariable { get; set; }
+
+        protected MultiplyLinguisticVariable? MultiplyLinguisticVariableData { get; set; }
+
+        protected SingletoneLinguisticVariable? SingletoneLinguisticVariableData { get; set; }
+
         [Inject]
         protected OlapHelper? OlapHelper { get; set; }
 
@@ -49,6 +54,15 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
 
         protected int? FuzzyFunctionBindedValue { get; set; }
 
+        public void OnMultipyVariableOlapAttrChanged(OlapAttr attr)
+        {
+            GridDataForMultiplyVariable = FuzzyDataDbContext?.CustomLinguisticVariables
+                .Include(item => item.Points)
+                .Where(item => item.CubeSliceId == SliceId)
+                .Where(item => item.MeasureName == attr.AttrName)
+                .Select(item => item);
+        }
+
         public void OnLinguisticChanged(KeyValuePair<int, string> t)
         {
             LinguisticVariableBindedValue = t.Key;
@@ -57,6 +71,11 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
             {
                 case LinguisticVariableTypeEnum.SingletoneLinguisticVariable:
                     FuzzyFunctionDt = FuzzyFunctionData.BuildDataSource();
+                    break;
+
+                case LinguisticVariableTypeEnum.MultiplyLunguisticVariable:
+                    MultiplyLinguisticVariableData = new();
+                    OlapAttrs = OlapHelper?.GetAttrDescription();
                     break;
             }
         }
@@ -69,7 +88,7 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
             {
                 OlapAttrs = OlapHelper?.GetAttrDescription();
 
-                CustomLinguisticVariableData = new SingletoneLinguisticVariable(SelectedFuzzyFunctionData)
+                SingletoneLinguisticVariableData = new SingletoneLinguisticVariable(SelectedFuzzyFunctionData)
                 {
                     FuzzyFunctionData = SelectedFuzzyFunctionData
                 };
@@ -85,14 +104,14 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
             {
                 CreatedDate = DateTime.Now,
                 CreatorName = userStringId ?? string.Empty,
-                Name = CustomLinguisticVariableData!.Name,
-                MinIndex = CustomLinguisticVariableData.MinIndex,
+                Name = SingletoneLinguisticVariableData!.Name,
+                MinIndex = SingletoneLinguisticVariableData.MinIndex,
                 CubeSliceId = SliceId,
-                FuncId = CustomLinguisticVariableData.FuzzyFunctionData.Id,
-                MeasureName = CustomLinguisticVariableData.MOLAPItemName
+                FuncId = SingletoneLinguisticVariableData.FuzzyFunctionData.Id,
+                MeasureName = SingletoneLinguisticVariableData.MOLAPItemName
             };
 
-            new CustomLinguisticVariableRepository(FuzzyDataDbContext!).SaveCustomLinguisticVariable(dbObjVar, CustomLinguisticVariableData.PointsForChart);
+            new CustomLinguisticVariableRepository(FuzzyDataDbContext!).SaveCustomLinguisticVariable(dbObjVar, SingletoneLinguisticVariableData.PointsForChart);
 
             await JsRunTime!.InvokeVoidAsync("alert", "Лингвистическая переменная создана"); // Alert
             await OnSavedCallback.InvokeAsync();

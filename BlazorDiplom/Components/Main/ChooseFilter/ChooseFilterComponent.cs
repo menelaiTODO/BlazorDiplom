@@ -1,4 +1,5 @@
-﻿using FuzzyDataDbCore.DatabaseContext;
+﻿using BlazorDiplom.Infrastructure;
+using FuzzyDataDbCore.DatabaseContext;
 using FuzzyDataDbCore.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,8 @@ namespace BlazorDiplom.Components.Main.ChooseFilter
         protected IEnumerable<CustomLinguisticVariable>? GridData { get; set; }
 
         protected CustomLinguisticVariable? Selected { get; set; }
+
+        protected CustomLinguisticVariableEx? CustomLinguisticVariableEx { get; set; }
 
         protected override void OnInitialized()
         {
