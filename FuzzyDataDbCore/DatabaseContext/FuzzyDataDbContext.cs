@@ -13,8 +13,13 @@ namespace FuzzyDataDbCore.DatabaseContext
         public DbSet<Point> Points { get; set; }
 
         /// <summary>
-        /// Нечеткие лингв. переменные
+        /// Нечеткие одиночные лингв. переменные
         /// </summary>
         public DbSet<CustomLinguisticVariable> CustomLinguisticVariables { get; set; }
+
+        /// <summary>
+        /// Нечеткие составные лингв. переменные
+        /// </summary>
+        public DbSet<CustomMultiplyLinguisticVariable> CustomMultiplyLinguisticVariables { get; set; }
     }
 }

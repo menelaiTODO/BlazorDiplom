@@ -1,27 +1,83 @@
-﻿@using FuzzyDataDbCore.Models
+﻿@using BlazorDiplom.Infrastructure.Enums
+@using BlazorDiplom.ViewModels
+@using FuzzyDataDbCore.Models
 @inherits ChooseFilterComponent
 
-<h3>Выберите нечеткие лингв. переменные</h3>
-
 <div>
-<DxDataGrid SingleSelectedDataRowChanged="(item) => {Selected = item; CustomLinguisticVariableEx = new Infrastructure.CustomLinguisticVariableEx{LinguisticVariable = item}; StateHasChanged();}" Data="@GridData">
-    <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.Name)" Caption="Наименование"></DxDataGridColumn>
-    <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.MeasureName)" Caption="Мера"></DxDataGridColumn>
-    <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.CreatedDate)" Caption="Дата создания"></DxDataGridColumn>
-</DxDataGrid>
+    <h5>Выберите тип лингвистической переменной:</h5>
+    <div>
+        <DxComboBox Data="LinguisticVariableType"
+                    Value="LinguisticVariableBindedValue"
+                    ValueFieldName="Key"
+                    SelectedItemChanged="(KeyValuePair<int, string> item) => OnLinguisticChanged(item)"
+                    EditFormat="{0}"
+                    DisplayFormat="{0}">
+            <Columns>
+                <DxListEditorColumn Caption="Наименование" FieldName="Value" />
+            </Columns>
+        </DxComboBox>
+    </div>
 </div>
 
-@if (CustomLinguisticVariableEx?.LinguisticVariable != null)
+@if (LinguisticVariableBindedValue == (int)LinguisticVariableTypeEnum.SingletoneLinguisticVariable)
 {
-    <DxChart Data="@CustomLinguisticVariableEx.SingletoneLinguisticVariable.PointsForChart">
-        <DxChartLineSeries Name="Функция принадлежности"
-                           ArgumentField="((double X, double Y) item) => item.X"
-                           ValueField="((double X, double Y) item) => item.Y"
-                           DashStyle="ChartDashStyle.Dash">
-        </DxChartLineSeries>
-    </DxChart>
-}
 
-<div>
-  <button @onclick="ApplyFilter" type="button" class="btn btn-danger">Выбрать</button>
-</div>
+    <h3>Выберите нечеткие лингв. переменные</h3>
+
+    <div>
+        <DxDataGrid SingleSelectedDataRowChanged="(item) => {SelectedSingle = item; CustomLinguisticVariableEx = new Infrastructure.CustomLinguisticVariableEx{LinguisticVariable = item}; StateHasChanged();}" Data="@GridDataSingletone">
+            <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.Name)" Caption="Наименование"></DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.MeasureName)" Caption="Мера"></DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(CustomLinguisticVariable.CreatedDate)" Caption="Дата создания"></DxDataGridColumn>
+        </DxDataGrid>
+    </div>
+
+    @if (CustomLinguisticVariableEx?.LinguisticVariable != null)
+    {
+        <DxChart Data
+        ="@CustomLinguisticVariableEx?.SingletoneLinguisticVariable?.PointsForChart">
+            <DxChartLineSeries Name="Функция принадлежности"
+            ArgumentField="((double X, double Y) item) => item.X"
+            ValueField="((double X, double Y) item) => item.Y"
+            DashStyle="ChartDashStyle.Dash">
+            </DxChartLineSeries>
+        </DxChart>
+    }
+
+    <div>
+        <button @onclick="ApplySingleFilter" type="button" class="btn btn-danger">Выбрать</button>
+    </div>
+}
+else if (LinguisticVariableBindedValue == (int)LinguisticVariableTypeEnum.MultiplyLunguisticVariable)
+{
+    <h3>Выберите составные нечеткие лингв. переменные</h3>
+
+    <div>
+        <DxDataGrid SingleSelectedDataRowChanged="(item) => {SelectedMultiply = item; }" Data="@GridDataMultiply">
+            <DxDataGridColumn Field="@nameof(CustomMultiplyLinguisticVariable.Name)" Caption="Наименование"></DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(CustomMultiplyLinguisticVariable.MeasureName)" Caption="Мера"></DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(CustomMultiplyLinguisticVariable.CreatedDate)" Caption="Дата создания"></DxDataGridColumn>
+        </DxDataGrid>
+    </div>
+
+    @if (MultiplyCustomLinguisticVariableEx != null && MultiplyCustomLinguisticVariableEx.Any())
+    {
+        <DxChart Data="ChartData2">
+
+        @foreach(var variable in MultiplyCustomLinguisticVariableEx)
+        {
+                <DxChartLineSeries Name="@variable.LinguisticVariable.Name"
+                                   Filter="(KeyValuePair<int, (double X, double Y)> item) => item.Key == variable.LinguisticVariable.Id"
+                                   ArgumentField="(KeyValuePair<int, (double X, double Y)> item) => item.Value.X"
+                                   ValueField="(KeyValuePair<int, (double X, double Y)> item) => item.Value.Y"
+                               DashStyle="ChartDashStyle.Dash">
+            </DxChartLineSeries>
+        }
+
+        </DxChart>
+    }
+
+    <div>
+        <button @onclick="ApplySingleFilter" type="button" class="btn btn-danger">Выбрать</button>
+    </div>
+}

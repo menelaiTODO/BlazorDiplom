@@ -10,6 +10,9 @@ namespace FuzzyDataDbCore.Repository
 
         public CustomLinguisticVariableRepository(FuzzyDataDbContext dbContext) : base(dbContext) { }
 
+        /// <summary>
+        /// Сохранение настроек одиночной лингвистической переменной
+        /// </summary>
         public void SaveCustomLinguisticVariable(CustomLinguisticVariable data, IEnumerable<(double XValue, double YValue)> points)
         {
             using (var tran = DbContext.Database.BeginTransaction())
@@ -46,6 +49,15 @@ namespace FuzzyDataDbCore.Repository
                     tran.Rollback();
                 }
             }
+        }
+
+        /// <summary>
+        /// Сохранение настроек для множественной лингвистической переменной
+        /// </summary>
+        public void SaveCustomMultiplyLinguisticVariable(CustomMultiplyLinguisticVariable customMultiplyLinguisticVariable)
+        {
+            DbContext.CustomMultiplyLinguisticVariables.Add(customMultiplyLinguisticVariable);
+            DbContext.SaveChanges();
         }
     }
 }

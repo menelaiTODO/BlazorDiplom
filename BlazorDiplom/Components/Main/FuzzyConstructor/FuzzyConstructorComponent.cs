@@ -95,7 +95,7 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
             }
         }
 
-        protected async Task SaveChanges(MouseEventArgs eventArgs)
+        protected async Task SaveSingleVariableChanges(MouseEventArgs eventArgs)
         {
             var user = (await AuthProvider!.GetAuthenticationStateAsync()).User;
             var userStringId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
@@ -114,6 +114,27 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
             new CustomLinguisticVariableRepository(FuzzyDataDbContext!).SaveCustomLinguisticVariable(dbObjVar, SingletoneLinguisticVariableData.PointsForChart);
 
             await JsRunTime!.InvokeVoidAsync("alert", "Лингвистическая переменная создана"); // Alert
+            await OnSavedCallback.InvokeAsync();
+        }
+
+        protected async Task SaveMultiplyVariableChanges(MouseEventArgs eventArgs)
+        {
+            var user = (await AuthProvider!.GetAuthenticationStateAsync()).User;
+            var userStringId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
+
+            var dbObjVar = new CustomMultiplyLinguisticVariable
+            {
+                CreatedDate = DateTime.Now,
+                CreatorName = userStringId ?? string.Empty,
+                Name = MultiplyLinguisticVariableData!.Name,
+                CustomLinguisticVariables = MultiplyLinguisticVariableData?.SingletoneLinguisticVariables.ToList(),
+                CubeSliceId = SliceId,
+                MeasureName = MultiplyLinguisticVariableData!.MeasureName
+            };
+
+            new CustomLinguisticVariableRepository(FuzzyDataDbContext!).SaveCustomMultiplyLinguisticVariable(dbObjVar);
+
+            await JsRunTime!.InvokeVoidAsync("alert", "Составная лингвистическая переменная создана"); // Alert
             await OnSavedCallback.InvokeAsync();
         }
 

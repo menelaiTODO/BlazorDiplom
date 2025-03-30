@@ -4,6 +4,7 @@ using FuzzyDataDbCore.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FuzzyDataDbCore.Migrations
 {
     [DbContext(typeof(FuzzyDataDbContext))]
-    partial class FuzzyDataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330133029_MultiplyLinguisticVariable2_0")]
+    partial class MultiplyLinguisticVariable2_0
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

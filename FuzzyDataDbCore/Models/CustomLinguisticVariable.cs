@@ -38,6 +38,14 @@ namespace FuzzyDataDbCore.Models
         [Required]
         public string MeasureName { get; set; } = string.Empty;
 
-        public IEnumerable<Point>? Points { get; set; }
+        /// <summary>
+        /// Точки для функции принадлежности 
+        /// </summary>
+        public ICollection<Point>? Points { get; set; }
+
+        /// <summary>
+        /// Свойство-связь (многие ко многим)
+        /// </summary>
+        public ICollection<CustomMultiplyLinguisticVariable>? CustomMultiplyLinguisticVariables { get; set; }
     }
 }

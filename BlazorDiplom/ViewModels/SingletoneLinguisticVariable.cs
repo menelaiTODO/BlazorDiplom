@@ -53,7 +53,7 @@ namespace BlazorDiplom.ViewModels
                     defaultPoints.Insert(3, (second.First + 200, second.Second));
                 }
 
-                return defaultPoints;
+                return defaultPoints.AsEnumerable();
             } 
         }
 

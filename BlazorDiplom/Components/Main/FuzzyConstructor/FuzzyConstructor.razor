@@ -96,7 +96,7 @@
               <InputText @bind-Value="@SingletoneLinguisticVariableData.Name" />
             </div>
 
-            <DxButton RenderStyle="ButtonRenderStyle.Primary" RenderStyleMode="ButtonRenderStyleMode.Contained"  Text="Сохранить" Click="@SaveChanges"></DxButton>
+            <DxButton RenderStyle="ButtonRenderStyle.Primary" RenderStyleMode="ButtonRenderStyleMode.Contained"  Text="Сохранить" Click="@SaveSingleVariableChanges"></DxButton>
         }
     </div>
         </div>
@@ -140,7 +140,9 @@
 
                 <div>
                     <InputText @bind-Value="@MultiplyLinguisticVariableData.Name" />
-            </div>
+               </div>
+
+               <DxButton RenderStyle="ButtonRenderStyle.Primary" RenderStyleMode="ButtonRenderStyleMode.Contained"  Text="Сохранить" Click="@SaveMultiplyVariableChanges"></DxButton>
             }
      </div>
     }
