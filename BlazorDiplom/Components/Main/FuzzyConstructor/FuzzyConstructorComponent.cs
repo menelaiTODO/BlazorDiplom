@@ -111,7 +111,7 @@ namespace BlazorDiplom.Components.Main.FuzzyConstructor
                 MeasureName = SingletoneLinguisticVariableData.MOLAPItemName
             };
 
-            new CustomLinguisticVariableRepository(FuzzyDataDbContext!).SaveCustomLinguisticVariable(dbObjVar, SingletoneLinguisticVariableData.PointsForChart);
+            new CustomLinguisticVariableRepository(FuzzyDataDbContext!).SaveCustomLinguisticVariable(dbObjVar, SingletoneLinguisticVariableData.Points.Zip(SingletoneLinguisticVariableData.FuzzyFunctionData.YValues));
 
             await JsRunTime!.InvokeVoidAsync("alert", "Лингвистическая переменная создана"); // Alert
             await OnSavedCallback.InvokeAsync();

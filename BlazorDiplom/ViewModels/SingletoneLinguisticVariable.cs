@@ -49,8 +49,8 @@ namespace BlazorDiplom.ViewModels
                     var first = defaultPoints[0];
                     var second = defaultPoints[1];
 
-                    defaultPoints.Insert(0, (first.First - 200, first.Second));
-                    defaultPoints.Insert(3, (second.First + 200, second.Second));
+                    defaultPoints.Insert(0, (first.First - first.First * 0.5, first.Second));
+                    defaultPoints.Insert(3, (second.First + second.First * 0.5, second.Second));
                 }
 
                 return defaultPoints.AsEnumerable();

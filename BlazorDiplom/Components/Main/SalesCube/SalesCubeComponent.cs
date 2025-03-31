@@ -4,6 +4,8 @@ using FuzzyDataDbCore.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using OLTPDatabaseCore.Jobs;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BlazorDiplom.Components.Main.SalesCube
 {
@@ -64,9 +66,9 @@ namespace BlazorDiplom.Components.Main.SalesCube
 
         protected void HandleFilterChanged(object value)
         {
-            var variable = (CustomLinguisticVariable)value;
+            var variables = ((IEnumerable<CustomLinguisticVariable>)value).Select(item => new CustomLinguisticVariableEx { LinguisticVariable = item});
 
-            GridData = OlapHelper?.GetFuzzySalesData(new CustomLinguisticVariableEx { LinguisticVariable = variable})!;
+            GridData = OlapHelper?.GetFuzzySalesData(variables.ToArray())!;
 
             IsFilterPopupVisible = false;
             

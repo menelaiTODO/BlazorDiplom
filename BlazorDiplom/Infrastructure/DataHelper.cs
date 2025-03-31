@@ -24,6 +24,14 @@ namespace BlazorDiplom.Infrastructure
             return dt.OrderBy(item => item.Key);
         }
 
+        /// <summary>
+        /// Создает из одиночного объекта перичисление 
+        /// </summary>
+        public static IEnumerable<T> ToEnumerable<T>(this T obj)
+        {
+            yield return obj;
+        }
+
         private static string GetEnumDescription(Enum value)
         {
             var fi = value.GetType()?.GetField(value.ToString());

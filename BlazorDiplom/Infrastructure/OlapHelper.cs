@@ -73,12 +73,13 @@ namespace BlazorDiplom.Infrastructure
 
             foreach (var row in salesData)
             {
+                var resultsInternal = new List<(CustomLinguisticVariable Variable, double Result)>();
+                
                 foreach (var variable in linguisticVariables)
                 {
                     // к какому объекту в строке будет применяться вычисление значение функции принадлежности
                     var rowObj = DataHelper.GetPropertyValueByColumnName(row, variable!.LinguisticVariable!.MeasureName);
 
-                    var resultsInternal = new List<(CustomLinguisticVariable Variable, double Result)>();
                     
                     if (rowObj != null)
                     {
@@ -87,7 +88,6 @@ namespace BlazorDiplom.Infrastructure
 
                         var result = variable.FuzzyFunctionData.MemberShipFunction(points, (double)rowObj);
 
-
                         if (result >= variable.LinguisticVariable.MinIndex)
                         {
                             row.FuzzyResults.Add((variable.LinguisticVariable.Name, result));
@@ -95,12 +95,12 @@ namespace BlazorDiplom.Infrastructure
 
                         resultsInternal.Add((variable.LinguisticVariable, result));
                     }
-
-                    if (resultsInternal.All(item => item.Result >= item.Variable.MinIndex))
-                        yield return row;
-                    else
-                        continue;
                 }
+
+                if (resultsInternal.Any(item => item.Result >= item.Variable.MinIndex))
+                    yield return row;
+                else
+                    continue;
             }
         }
     }

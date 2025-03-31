@@ -94,7 +94,15 @@ namespace BlazorDiplom.Components.Main.ChooseFilter
             if (SelectedSingle is null)
                 return;
 
-            await OnChoosedCallback.InvokeAsync(SelectedSingle!);
+            await OnChoosedCallback.InvokeAsync(SelectedSingle!.ToEnumerable());
+        }
+
+        protected async Task ApplyMultiplyFilter()
+        {
+            if (SelectedMultiply is null)
+                return;
+
+            await OnChoosedCallback.InvokeAsync(SelectedMultiply!.CustomLinguisticVariables!);
         }
     }
 }
